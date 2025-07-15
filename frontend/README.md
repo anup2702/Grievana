@@ -25,7 +25,7 @@ Grievana is a full-stack application designed to manage and track complaints eff
 ## How to Run
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-username/your-repo.git
+   git clone https://github.com/anup2702/Grievana-Complaint-Reg-Mang
    ```
 2. **Install dependencies:**
    - Frontend: `cd frontend && npm install`
