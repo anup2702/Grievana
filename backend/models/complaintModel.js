@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const complaintSchema = new mongoose.Schema({
+  image: { type: String},
   title: { type: String, required: true },
   description: { type: String, required: true },
   place: { type: String, required: true },
