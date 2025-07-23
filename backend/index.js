@@ -3,7 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import complaintRoutes from './routes/complaintRoute.js';
-import studentRouter from './routes/studentRoute.js';
+import studentRoute from './routes/studentRoute.js';
+import adminbRoute from './routes/adminRoute.js';
+
 // import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // Load environment variables
@@ -19,7 +21,8 @@ app.use(express.json());
 connectDB();
 
 // API routes
-app.use('/api/student', studentRouter);
+app.use('/api/student', studentRoute);
+app.use('/api/admin', adminRouter);
 app.use('/api/complaints', complaintRoutes);
 
 // Root route

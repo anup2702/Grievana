@@ -8,6 +8,7 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import StudentDashboard from './pages/dashboard/StudentDashboard';
+import AdminDashboard from './pages/dashboard/AdminDashboard';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <Route path="/dashboard/*" element={<StudentDashboard />} />
       </Routes>
 
-      <ToastContainer position="top-center" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
