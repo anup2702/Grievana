@@ -1,104 +1,149 @@
-import complaintModel from '../models/complaintModel.js'
+import asyncHandler from "express-async-handler";
+import Complaint from "../models/Complaint.js";
 
-// fetch all complaints
-const getAllComplaints = async (req, res) => {
-    try {
-        const complaints = await complaintModel.find().sort({ createdAt: -1 })
-        res.status(200).json(complaints)
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching complaints', error: error })
-    }
-}
+// Create a new complaint
+export const createComplaint = asyncHandler(async (req, res) => {
+  const { title, description, category, image } = req.body;
 
-// create complaints
-const createComplaint = async (req, res) => {
-    try {
-        const { title, description, place, category, user } = req.body
+  const complaint = new Complaint({
+    user: req.user.id,
+    title,
+    description,
+    category,
+    image, // Save the image filename
+    status: "pending", // Default status for new complaints
+  });
 
-        const newComplaint = new complaintModel({
-            title,
-            description,
-            place,
-            category,
-            user
-        })
+  const createdComplaint = await complaint.save();
+  res.status(201).json(createdComplaint);
+});
 
-        const savedComplaint = await newComplaint.save()
-        res.status(201).json(savedComplaint)
+// Get all complaints for a user
+export const getUserComplaints = asyncHandler(async (req, res) => {
+  const complaints = await Complaint.find({ user: req.user.id });
+  res.json(complaints);
+});
 
-    } catch (error) {
-        res.status(500).json({ message: 'Error creating complaint', error: error })
-    }
-}
+// Get all complaints (for admin or general feed)
+export const getAllComplaints = asyncHandler(async (req, res) => {
+  const { status, category, search } = req.query;
+  let query = {};
 
-const getComplaintById = async (req, res) => {
-    try {
-        const complaint = await complaintModel.findById(req.params.id)
-        if(!complaint){
-            return res.status(404).json({message: 'Complaint not found'})
-            res.status(200).json(complaint)
-        }
-    } catch (error) {
-        res.status(500).json({message: 'Error fetching complaint', error: error})
-    }
-}
-
-const updateComplaint = async (req, res) => {
-    try {
-        const updated = await complaintModel.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true})
-        if(!updated) return res.status(404).json({message: 'Complaint not found'})
-        res.status(200).json(updated)
-    } catch (error) {
-        res.status(500).json({message: 'Error updating complaint', error: error})
-    }
-}
-
-const deleteComplaint = async (req, res) => {
-    try {
-        const deleted = await complaintModel.findByIdAndDelete(req.params.id)
-        if(!deleted) return res.status(404).json({message: 'Complaint not found'})
-        res.status(200).json({message: 'Complaint deleted successfully'})
-    } catch (error) {
-        res.status(500).json({message: 'Error deleting complaint', error: error})
-    }
-}
-
-const updateStatus = async (req, res) => {
-    try {
-        const {status} = req.body
-        if(!["pending", "resolved"].includes(status)){
-            return res.status(400).json({message: 'Invalid status'})
-        }
-
-        const complaint = await complaintModel.findById(req.params.id, {status}, {new: true})
-        res.status(200).json(complaint)
-    } catch (error) {
-        res.status(500).json({message: 'Error updating status', error: error})
-    }
-}
-
-const voteComplaint = async (req, res) => {
-  try {
-    const complaint = await complaintModel.findById(req.params.id)
-    if (!complaint) {
-      return res.status(404).json({ message: 'Complaint not found' })
-    }
-
-    const userId = req.user._id
-
-    if (complaint.votedBy.includes(userId)) {
-      return res.status(400).json({ message: 'You have already voted on this complaint' })
-    }
-
-    complaint.voted += 1
-    complaint.votedBy.push(userId)
-    await complaint.save()
-
-    res.json({ message: 'Vote registered', voted: complaint.voted })
-  } catch (err) {
-    res.status(500).json({ message: err.message })
+  if (status) {
+    query.status = status;
   }
-}
+  if (category) {
+    query.category = category;
+  }
+  if (search) {
+    query.$or = [
+      { title: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+    ];
+  }
 
+  const complaints = await Complaint.find(query)
+    .populate({
+      path: "user",
+      select: "name image",
+      transform: (doc) => {
+        if (doc && doc.image) {
+          return { ...doc._doc, image: doc.image.toString('base64') };
+        }
+        return doc;
+      },
+    })
+    .sort({ createdAt: -1 });
 
-export {getAllComplaints, createComplaint, getComplaintById, updateComplaint, deleteComplaint, updateStatus, voteComplaint}
+  const populatedComplaints = complaints.map(complaint => {
+    const complaintObject = complaint.toObject();
+    if (complaintObject.user && complaintObject.user.image) {
+      complaintObject.user.image = complaintObject.user.image.toString('base64');
+    }
+    if (complaintObject.image) {
+      complaintObject.image = `data:image/jpeg;base64,${complaintObject.image.toString('base64')}`;
+    }
+    return complaintObject;
+  });
+
+  res.json(populatedComplaints);
+});
+
+// Get a single complaint by ID
+export const getComplaintById = asyncHandler(async (req, res) => {
+  const complaint = await Complaint.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
+
+  if (complaint) {
+    if (complaint.image) {
+      complaint.image = `data:image/jpeg;base64,${complaint.image.toString('base64')}`;
+    }
+    res.json(complaint);
+  } else {
+    res.status(404);
+    throw new Error("Complaint not found");
+  }
+});
+
+// Update a complaint
+export const updateComplaint = asyncHandler(async (req, res) => {
+  const { title, description, category } = req.body;
+
+  const complaint = await Complaint.findById(req.params.id);
+
+  if (complaint) {
+    complaint.title = title || complaint.title;
+    complaint.description = description || complaint.description;
+    complaint.category = category || complaint.category;
+
+    const updatedComplaint = await complaint.save();
+    res.json(updatedComplaint);
+  } else {
+    res.status(404);
+    throw new Error("Complaint not found");
+  }
+});
+
+// Update complaint status
+export const updateComplaintStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  console.log(`Backend: Attempting to update complaint ${req.params.id} to status: ${status}`);
+
+  const complaint = await Complaint.findById(req.params.id);
+
+  if (complaint) {
+    console.log("Backend: Complaint found:", complaint);
+    complaint.status = status || complaint.status;
+
+    const updatedComplaint = await complaint.save();
+    console.log("Backend: Complaint updated successfully:", updatedComplaint);
+    res.json(updatedComplaint);
+  } else {
+    console.log("Backend: Complaint not found for ID:", req.params.id);
+    res.status(404);
+    throw new Error("Complaint not found");
+  }
+});
+
+// Upvote a complaint
+export const upvoteComplaint = asyncHandler(async (req, res) => {
+  const complaint = await Complaint.findById(req.params.id);
+
+  if (complaint) {
+    // Check if the user has already upvoted this complaint
+    if (complaint.upvotes.includes(req.user.id)) {
+      res.status(400);
+      throw new Error("You have already upvoted this complaint");
+    }
+
+    complaint.upvotes.push(req.user.id);
+    complaint.voted = (complaint.voted || 0) + 1; // Increment voted count
+    const updatedComplaint = await complaint.save();
+    res.json(updatedComplaint);
+  } else {
+    res.status(404);
+    throw new Error("Complaint not found");
+  }
+});

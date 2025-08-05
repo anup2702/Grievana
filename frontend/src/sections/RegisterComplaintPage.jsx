@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "../api/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -8,58 +8,61 @@ const RegistrationSection = () => {
   const [description, setDescription] = useState("");
   const [department, setDepartment] = useState("");
   const [location, setLocation] = useState("");
+  const [image, setImage] = useState(null);
 
   const navigate = useNavigate();
 
-  console.log("User:", student);
-
   const handleComplaintSubmit = async (e) => {
     e.preventDefault();
-    const user = JSON.parse(localStorage.getItem("student"));
-    console.log("User:", user);
-    console.log({ title, description, location, department });
 
-    if (!user || !user.token) {
-      toast.error("User not logged in.");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user._id) {
+      toast.error("User data not found. Please log in again.");
+      navigate("/login");
       return;
     }
 
-    try {
-      console.log("Submitting complaint...");
-      const { data } = await axios.post(
-        "http://localhost:5000/api/complaints/createComplaint",
-        {
-          title,
-          description,
-          place: location,
-          category: department,
-          user: user._id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("place", location);
+    formData.append("category", department);
+    formData.append("user", user._id);
+    if (image) {
+      formData.append("image", image);
+    }
 
+    try {
+      await API.post("/complaints", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       toast.success("Complaint submitted successfully!");
       navigate("/dashboard");
-    } catch (error) {
-      console.error("Error submitting complaint:", error);
+    } catch (err) {
+      console.error("Error submitting complaint:", err);
       toast.error(
-        error.response?.data?.message || "Failed to submit complaint"
+        err.response?.data?.message || "Failed to submit complaint"
       );
+      if (err.response?.status === 401) {
+        toast.error("Session expired. Please log in again.");
+        navigate("/login");
+      }
     }
   };
 
   return (
-    <div className="flex-1 h-full flex flex-col bg-white rounded-lg shadow p-6">
+    <div className="flex-1 min-h-screen flex flex-col bg-white rounded-lg shadow-md p-6">
       <h2 className="text-2xl font-bold mb-6 text-blue-600">
         Complaint Registration
       </h2>
-      <form onSubmit={handleComplaintSubmit} className="space-y-6 px-8">
+      
+      <form onSubmit={handleComplaintSubmit} className="space-y-6 px-4 md:px-8">
+        
         {/* Title */}
-        <div className="flex flex-col mb-4">
+        <div className="flex flex-col">
           <label htmlFor="title" className="text-sm font-medium text-gray-700">
             Title
           </label>
@@ -73,12 +76,10 @@ const RegistrationSection = () => {
             required
           />
         </div>
+
         {/* Description */}
         <div className="flex flex-col">
-          <label
-            htmlFor="description"
-            className="text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="description" className="text-sm font-medium text-gray-700">
             Description
           </label>
           <textarea
@@ -91,12 +92,10 @@ const RegistrationSection = () => {
             required
           ></textarea>
         </div>
+
         {/* Department */}
         <div className="flex flex-col">
-          <label
-            htmlFor="department"
-            className="text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="department" className="text-sm font-medium text-gray-700">
             Department
           </label>
           <input
@@ -109,12 +108,10 @@ const RegistrationSection = () => {
             required
           />
         </div>
+
         {/* Location */}
         <div className="flex flex-col">
-          <label
-            htmlFor="location"
-            className="text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="location" className="text-sm font-medium text-gray-700">
             Location
           </label>
           <input
@@ -127,11 +124,26 @@ const RegistrationSection = () => {
             required
           />
         </div>
-        {/* Submit */}
-        <div className="flex items-center justify-center">
+
+        {/* Image Upload */}
+        <div className="flex flex-col">
+          <label htmlFor="image" className="text-sm font-medium text-gray-700">
+            Upload Image (Optional)
+          </label>
+          <input
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="mt-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex items-center justify-center pt-2">
           <button
             type="submit"
-            className="w-80 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full max-w-md bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           >
             Submit Complaint
           </button>

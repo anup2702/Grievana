@@ -1,146 +1,126 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import API from '../../api/axios';
 
 const RegisterPage = () => {
-  const [role, setRole] = useState('student')
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [role, setRole] = useState('student');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleChange = async (e) => {
-    e.preventDefault()
-    try {
-      const {data} = await axios.post('http://localhost:5000/api/student/register', {
-        email,
-        password,
-        role,
-        phone,
-        name
-      })
-      localStorage.setItem('token', data.token)
-      toast.success('Registration Successful')
-      navigate('/dashboard')
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed')
+  const navigate = useNavigate();
+
+ const handleChange = async (e) => {
+  e.preventDefault();
+  try {
+    const { data } = await API.post('/users/register', {
+      email,
+      password,
+      role,
+    });
+
+    // Check for expected properties directly in data
+    if (data && data._id && data.token) {
+      // Destructure user properties and token directly from data
+      const { _id, name, email: userEmail, role: userRole, token, profileCompleted, image } = data;
+      const user = { _id, name, email: userEmail, role: userRole, profileCompleted, image };
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+      toast.success("Registration Successful");
+      if (!profileCompleted) {
+        navigate("/edit-profile");
+      } else if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+    } else {
+      // Handle cases where the API returns a 2xx response but no user/token
+      throw new Error("Invalid registration response from server.");
     }
+  } catch (error) {
+    console.error("Registration Error:", error);
+    const errorMessage = error.message === "Invalid registration response from server."
+      ? "Registration failed: Invalid server response."
+      : error.response?.data?.message || 'Registration failed';
+    toast.error(errorMessage);
   }
+};
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg px-6 py-8 min-h-[380px] flex flex-col items-center justify-between">
-
-        {/* Top Section */}
-        <div className="flex flex-col gap-4">
-          {/* Logo */}
-          <div className="flex justify-center">
-            <img src="/logo.png" alt="Grievana Logo" className="h-12 object-contain" />
-          </div>
-
-          {/* Heading */}
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-800">Welcome</h2>
-            <p className="text-sm text-gray-500">Please create an account</p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleChange} className="space-y- h-75 w-90 flex flex-col justify-center gap-1">
-            {/* Name  */}
-            <div className="space-y-1">
-              <label htmlFor="name" className="text-sm text-gray-700 font-medium">Name</label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="john doe"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            {/* Phone  */}
-            <div className="space-y-1">
-              <label htmlFor="phone" className="text-sm text-gray-700 font-medium">Phone</label>
-              <input
-                type="number"
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+02 345 235 233"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            {/* Email */}
-            <div className="space-y-1">
-              <label htmlFor="email" className="text-sm text-gray-700 font-medium">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-            {/* Password */}
-            <div className="space-y-1">
-              <label htmlFor="password" className="text-sm text-gray-700 font-medium">Password</label>
-              <input
-                type="password"
-                id="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-            {/* Role Toggle */}
-            <div className="mt-3 flex justify-center gap-4">
-              <button
-                type="button"
-                onClick={() => setRole("student")}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium border transition ${
-                  role === "student"
-                    ? "bg-blue-600 text-white border-blue-600 shadow"
-                    : "bg-gray-100 text-blue-600 border-gray-300 hover:bg-blue-50"
-                }`}
-              >
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole("admin")}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium border transition ${
-                  role === "admin"
-                    ? "bg-blue-600 text-white border-blue-600 shadow"
-                    : "bg-gray-100 text-blue-600 border-gray-300 hover:bg-blue-50"
-                }`}
-              >
-                Staff
-              </button>
-            </div>
-
-            {/* Login Button */}
-            <div className='flex items-center justify-center pt-2'>
-              <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Register
-            </button>
-            </div>
-          </form>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-50 px-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-lg px-8 py-10">
+        
+        {/* Logo + Heading */}
+        <div className="text-center mb-6">
+          <img src="/logo.png" alt="Grievana Logo" className="h-14 mx-auto mb-4" />
+          <h2 className="text-3xl font-bold text-gray-800">Create Account 🚀</h2>
+          <p className="text-sm text-gray-500">It only takes a few steps</p>
         </div>
 
-        {/* Sign Up */}
-        <p className="text-center text-sm text-gray-600 mt-6">
-          Have an account?{" "}
+        {/* Registration Form */}
+        <form onSubmit={handleChange} className="space-y-1">
+          
+          {/* Email */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Role Selection */}
+          <div className="flex justify-center gap-4 mt-2">
+            {['student', 'admin'].map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRole(r)}
+                className={`px-4 py-1.5 rounded-md text-sm font-medium border transition ${
+                  role === r
+                    ? 'bg-blue-600 text-white border-blue-600 shadow'
+                    : 'bg-gray-100 text-blue-600 border-gray-300 hover:bg-blue-50'
+                }`}
+              >
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full py-2 bg-blue-600 text-white text-sm rounded-md font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Register
+          </button>
+        </form>
+
+        {/* Footer */}
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Already have an account?{' '}
           <Link to="/login" className="text-blue-600 font-medium hover:underline">
             Login
           </Link>

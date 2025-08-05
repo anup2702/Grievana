@@ -1,120 +1,117 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-import {useNavigate} from 'react-router-dom'
-import {toast} from 'react-toastify'
-
+import React, { useState } from "react";
+import API from "../../api/axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
-  const [role, setRole] = useState('student');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    setLoading(true);
     try {
-      const {data} = await axios.post('http://localhost:5000/api/student/login', {
+      const { data } = await API.post("/users/login", {
         email,
         password,
-        role
-      })
-      localStorage.setItem('token', data.token)
-      toast.success('Login Successful')
-      navigate('/dashboard')
+      });
+
+      console.log("Login API Response Data:", data); // Log the response data for debugging
+
+      // Check for expected properties directly in data
+      if (data && data.token) {
+        // Destructure user properties and token directly from data
+        const { _id, name, email: userEmail, role: userRole, token, image } = data;
+        const user = { _id, name, email: userEmail, role: userRole, image };
+
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+        toast.success("Login Successful");
+
+        console.log("User role after login:", user.role); // Log the user's role
+
+        if (user.role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/dashboard");
+        }
+      } else {
+        // Handle cases where the API returns a 2xx response but no expected data
+        console.error("Login Error: Invalid or incomplete response from server.", data);
+        throw new Error("Login failed: Invalid server response.");
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed')
+      console.error("Login Error:", error);
+      const errorMessage = error.message.includes("Invalid server response")
+        ? error.message
+        : error.response?.data?.message ||
+          error.response?.data?.error ||
+          "Login failed";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg px-6 py-8 min-h-[380px] flex flex-col items-center justify-between">
-
-        {/* Top Section */}
-        <div className="flex flex-col gap-6">
-          {/* Logo */}
-          <div className="flex justify-center">
-            <img src="/logo.png" alt="Grievana Logo" className="h-12 object-contain" />
-          </div>
-
-          {/* Heading */}
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
-            <p className="text-sm text-gray-500">Please login to your account</p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleLogin} className="space-y- h-45 w-90 flex flex-col justify-between">
-            {/* Email */}
-            <div className="space-y-1">
-              <label htmlFor="email" className="text-sm text-gray-700 font-medium">Email</label>
-              <input
-                type="email"
-                id="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-            {/* Password */}
-            <div className="space-y-1">
-              <label htmlFor="password" className="text-sm text-gray-700 font-medium">Password</label>
-              <input
-                type="password"
-                id="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-            {/* Role Toggle */}
-            <div className="mt-3 flex justify-center gap-4">
-              <button
-                type="button"
-                onClick={() => setRole("student")}
-                className={`px-4 py-1.5 h-7 w-14 rounded-md text-sm font-medium border transition ${
-                  role === "student"
-                    ? "bg-blue-600 text-white border-blue-600 shadow"
-                    : "bg-gray-100 text-blue-600 border-gray-300 hover:bg-blue-50"
-                }`}
-              >
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole("admin")}
-                className={`px-4 py-1.5 w-10 rounded-md text-sm font-medium border transition ${
-                  role === "admin"
-                    ? "bg-blue-600 text-white border-blue-600 shadow"
-                    : "bg-gray-100 text-blue-600 border-gray-300 hover:bg-blue-50"
-                }`}
-              >
-                Staff
-              </button>
-            </div>
-
-            {/* Login Button */}
-            <div className='flex items-center justify-center'>
-              <button
-              type="submit"
-              className="w-50 h-7 bg-blue-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              Login
-            </button>
-            </div>
-          </form>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-50 px-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl px-8 py-10">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <img src="/logo.png" alt="Grievana Logo" className="h-14 mx-auto mb-4" />
+          <h2 className="text-3xl font-bold text-gray-800">Welcome Back 👋</h2>
+          <p className="text-sm text-gray-500 mt-1">Login to your account</p>
         </div>
 
-        {/* Sign Up */}
-        <p className="text-center text-sm text-gray-600 mt-6">
+        {/* Login Form */}
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2 bg-blue-600 text-white text-sm rounded-md font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-sm text-gray-600">
           Don’t have an account?{" "}
-          <a href="/register" className="text-blue-600 font-medium hover:underline">
+          <a
+            href="/register"
+            className="text-blue-600 font-medium hover:underline"
+          >
             Sign Up
           </a>
         </p>

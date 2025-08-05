@@ -1,3 +1,4 @@
+// protect.js
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
@@ -12,4 +13,14 @@ export const protect = async (req, res, next) => {
   } catch (err) {
     res.status(401).json({ message: "Invalid token" });
   }
+};
+
+// Middleware to check role
+export const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Access denied: Insufficient role" });
+    }
+    next();
+  };
 };
