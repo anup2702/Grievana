@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -11,6 +12,17 @@ import adminRoutes from "./routes/adminRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import cors from "cors";
 
+=======
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectDB } from './config/db.js';
+import complaintRoutes from './routes/complaintRoute.js';
+import studentRoute from './routes/studentRoute.js';
+import adminbRoute from './routes/adminRoute.js';
+
+// import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+>>>>>>> 4a19ab3571681c5bb6b67186d3aff00db5aa42f3
 
 dotenv.config();
 const app = express();
@@ -21,9 +33,16 @@ app.use(cors({
 
 app.use(express.json());
 
+<<<<<<< HEAD
 // Get __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+=======
+// API routes
+app.use('/api/student', studentRoute);
+app.use('/api/admin', adminRouter);
+app.use('/api/complaints', complaintRoutes);
+>>>>>>> 4a19ab3571681c5bb6b67186d3aff00db5aa42f3
 
 // Serve static files from the 'uploads' directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
