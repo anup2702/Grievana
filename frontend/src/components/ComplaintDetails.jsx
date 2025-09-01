@@ -108,7 +108,7 @@ const ComplaintDetails = () => {
         {complaint.image && (
           <div className="flex justify-center items-center">
             <img
-              src={complaint.image}
+              src={`http://localhost:5000/uploads/${complaint.image}`}
               alt="Complaint attachment"
               className="rounded-lg shadow-md max-h-80 object-contain"
             />

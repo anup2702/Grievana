@@ -6,6 +6,8 @@ import { Sparkles } from "lucide-react";
 const FeedSection = () => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState('');
   
 
   const fetchComplaints = async () => {
@@ -47,6 +49,11 @@ const FeedSection = () => {
     setShowModal(true);
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalImageSrc('');
+  };
+
   
 
   useEffect(() => {
@@ -82,9 +89,10 @@ const FeedSection = () => {
               </span>
               {complaint.image && (
               <img
-                src={complaint.image}
+                src={`http://localhost:5000/uploads/${complaint.image}`}
                 alt="Complaint attachment"
-                className="w-full h-32 object-cover rounded-md mb-2"
+                className="w-full h-32 object-cover rounded-md mb-2 cursor-pointer"
+                onClick={() => handleViewImage(complaint.image)}
               />
             )}
             </div>

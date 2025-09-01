@@ -1,79 +1,77 @@
-import React, { useState } from "react";
-import { toast } from "react-toastify";
+import React from "react";
+
+const contacts = [
+  {
+    _id: 1,
+    name: "Dr. John Doe",
+    department: "Computer Science",
+    email: "john.doe@example.com",
+    phone: "123-456-7890",
+    imageUrl: "https://i.pravatar.cc/150?img=1",
+  },
+  {
+    _id: 2,
+    name: "Dr. Jane Smith",
+    department: "Hostel Affairs",
+    email: "jane.smith@example.com",
+    phone: "234-567-8901",
+    imageUrl: "https://i.pravatar.cc/150?img=2",
+  },
+  {
+    _id: 3,
+    name: "Mr. Robert Brown",
+    department: "Finance Department",
+    email: "robert.brown@example.com",
+    phone: "345-678-9012",
+    imageUrl: "https://i.pravatar.cc/150?img=3",
+  },
+  {
+    _id: 4,
+    name: "Ms. Emily White",
+    department: "Student Affairs",
+    email: "emily.white@example.com",
+    phone: "456-789-0123",
+    imageUrl: "https://i.pravatar.cc/150?img=4",
+  },
+  {
+    _id: 5,
+    name: "Mr. Michael Green",
+    department: "Library",
+    email: "michael.green@example.com",
+    phone: "567-890-1234",
+    imageUrl: "https://i.pravatar.cc/150?img=5",
+  },
+  {
+    _id: 6,
+    name: "Dr. Sarah Black",
+    department: "Sports Department",
+    email: "sarah.black@example.com",
+    phone: "678-901-2345",
+    imageUrl: "https://i.pravatar.cc/150?img=6",
+  },
+];
 
 const ContactAdmin = () => {
-  const [formData, setFormData] = useState({
-    subject: "",
-    message: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      // TODO: Replace with actual POST request
-      console.log("Submitted:", formData);
-      toast.success("Your message has been sent!");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (error) {
-      toast.error("Failed to send message. Try again later.");
-    }
-  };
-
   return (
     <div className="flex-1 min-h-screen flex flex-col bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold mb-6 text-blue-600">Contact Management</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-5 px-2 md:px-4">
-        
-
-        {/* Subject */}
-        <div className="flex flex-col">
-          <label htmlFor="subject" className="text-sm font-medium text-gray-700">Subject</label>
-          <input
-            id="subject"
-            name="subject"
-            type="text"
-            required
-            value={formData.subject}
-            onChange={handleChange}
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
-            placeholder="Feedback, Issue, or Query"
-          />
-        </div>
-
-        {/* Message */}
-        <div className="flex flex-col">
-          <label htmlFor="message" className="text-sm font-medium text-gray-700">Message</label>
-          <textarea
-            id="message"
-            name="message"
-            rows={4}
-            required
-            value={formData.message}
-            onChange={handleChange}
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm resize-none"
-            placeholder="Type your message here..."
-          />
-        </div>
-
-        {/* Submit Button */}
-        <div className="pt-2 flex justify-center">
-          <button
-            type="submit"
-            className="w-full max-w-md bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Send Message
-          </button>
-        </div>
-      </form>
+      <h2 className="text-2xl font-bold mb-6 text-blue-600">Contact Details</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {contacts.map((contact) => (
+          <div key={contact._id} className="bg-gray-100 p-4 rounded-lg text-center">
+            <img src={contact.imageUrl} alt={contact.name} className="w-24 h-24 rounded-full mx-auto mb-4" />
+            <h3 className="font-bold text-lg mb-2">{contact.name}</h3>
+            <p className="text-sm">
+              <strong>Department:</strong> {contact.department}
+            </p>
+            <p className="text-sm">
+              <strong>Email:</strong> <a href={`mailto:${contact.email}`} className="text-blue-600 hover:underline">{contact.email}</a>
+            </p>
+            <p className="text-sm">
+              <strong>Phone:</strong> <a href={`tel:${contact.phone}`} className="text-blue-600 hover:underline">{contact.phone}</a>
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

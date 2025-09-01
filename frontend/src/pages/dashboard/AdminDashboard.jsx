@@ -1,5 +1,4 @@
 import React from "react";
-<<<<<<< HEAD
 import AdminSidebar from "../../components/AdminSidebar";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import AdminComplaintsSection from "../../sections/AdminComplaintsSection";
@@ -36,25 +35,6 @@ const AdminDashboard = () => {
           <Route path="solved" element={<AdminSolvedComplaintsSection />} /> {/* New route */}
           <Route path="contact" element={<AdminContactSection />} />
           <Route path="*" element={<Navigate to="complaints" replace />} />
-=======
-import { Routes, Route, Navigate } from "react-router-dom";
-import AdminSidebar from "../../componenets/AdminSidebar";
-import FeedSection from "../../sections/FeedSection";
-import SolvedSection from "../../sections/SolvedSection";
-import EditProfile from "../../sections/EditProfile";
-
-const AdminDashboard = () => {
-  return (
-    <div className="min-h-screen flex bg-gray-50">
-      <AdminSidebar/>
-      <div className="flex-grow p-6">
-        <Routes>
-          <Route index element={<Navigate to="feed" replace />} />
-          <Route path="feed" element={<FeedSection />} />
-          <Route path="registered" element={<RegistrationSection />} />
-          <Route path="solved" element={<SolvedSection />} />
-          <Route path="edit" element={<EditProfile />} />
->>>>>>> 4a19ab3571681c5bb6b67186d3aff00db5aa42f3
         </Routes>
       </div>
     </div>

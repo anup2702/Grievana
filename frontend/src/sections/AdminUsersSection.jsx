@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 const AdminUsersSection = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -53,6 +54,12 @@ const AdminUsersSection = () => {
     }
   };
 
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return <p className="text-gray-500">Loading users...</p>;
   }
@@ -86,7 +93,7 @@ const AdminUsersSection = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <tr key={user._id} className="border-t">
               <td className="px-4 py-2">{user.name}</td>
               <td className="px-4 py-2">{user.email}</td>
