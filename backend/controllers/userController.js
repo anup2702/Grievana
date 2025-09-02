@@ -10,6 +10,7 @@ const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expires
 // Register a new user
 export const registerUser = asyncHandler(async (req, res) => {
   const { email, password, role } = req.body;
+  console.log("Backend: Received role:", role);
 
   // Validate email format and extract name
   const emailRegex = /^[a-zA-Z]+\.[a-zA-Z]+[0-9]{4}@iem\.edu\.in$/;
@@ -27,7 +28,9 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
 
+  console.log("Backend: Creating user with role:", role);
   const user = await User.create({ name, email, password, role });
+  console.log("Backend: User created with role:", user.role);
 
   if (user) {
     res.status(201).json({

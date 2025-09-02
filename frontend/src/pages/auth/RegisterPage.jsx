@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import API from '../../api/axios';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const RegisterPage = () => {
   const [role, setRole] = useState('student');
@@ -13,6 +14,7 @@ const RegisterPage = () => {
  const handleChange = async (e) => {
   e.preventDefault();
   try {
+    console.log("Frontend: Sending role:", role);
     const { data } = await API.post('/users/register', {
       email,
       password,
@@ -23,17 +25,23 @@ const RegisterPage = () => {
     if (data && data._id && data.token) {
       // Destructure user properties and token directly from data
       const { _id, name, email: userEmail, role: userRole, token, profileCompleted, image } = data;
+      console.log("Frontend: Received role:", userRole);
       const user = { _id, name, email: userEmail, role: userRole, profileCompleted, image };
+      console.log("Frontend: User role:", user.role);
 
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       toast.success("Registration Successful");
-      if (!profileCompleted) {
-        navigate("/edit-profile");
+      console.log("Frontend: profileCompleted:", profileCompleted, "user.role:", user.role);
+      if (!profileCompleted && user.role === "student") {
+        console.log("Frontend: Navigating to /dashboard/edit");
+        navigate("/dashboard/edit");
       } else if (user.role === "admin") {
+        console.log("Frontend: Navigating to /admin/dashboard");
         navigate("/admin/dashboard");
       } else {
-        navigate("/dashboard");
+        console.log("Frontend: Navigating to /dashboard/feed");
+        navigate("/dashboard/feed");
       }
     } else {
       // Handle cases where the API returns a 2xx response but no user/token

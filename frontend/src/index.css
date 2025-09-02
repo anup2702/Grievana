@@ -53,6 +53,26 @@ body {
   background-color: var(--bg-primary);
 }
 
+.bg-button-primary {
+  background-color: var(--button-primary);
+}
+
+.bg-button-hover {
+  background-color: var(--button-hover);
+}
+
+.text-button-primary {
+  color: var(--button-primary);
+}
+
+.border-button-primary {
+  border-color: var(--button-primary);
+}
+
+.focus\:ring-button-primary:focus {
+  --tw-ring-color: var(--button-primary);
+}
+
 .bg-theme-secondary {
   background-color: var(--bg-secondary);
 }
@@ -176,8 +196,8 @@ body {
 
 /* Theme Toggle Button for Navbar */
 .theme-toggle-navbar {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background-color: var(--bg-tertiary);
+  border: 2px solid var(--text-secondary);
   border-radius: 50%;
   width: 2.5rem;
   height: 2.5rem;
@@ -185,7 +205,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px var(--shadow);
+  box-shadow: 0 4px 12px var(--shadow);
   transition: all 0.3s ease;
 }
 
