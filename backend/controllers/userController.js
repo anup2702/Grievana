@@ -1,6 +1,9 @@
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
@@ -68,6 +71,10 @@ export const loginUser = asyncHandler(async (req, res) => {
 export const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
   if (user) {
+    const imageBase64 = user.image ? user.image.toString('base64') : null;
+    console.log('Profile fetch - User image buffer size:', user.image ? user.image.length : 'No image');
+    console.log('Profile fetch - Base64 image length:', imageBase64 ? imageBase64.length : 'No image');
+
     res.json({
       _id: user._id,
       name: user.name,
@@ -76,7 +83,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       phone: user.phone,
       department: user.department,
       rollNumber: user.rollNumber,
-      image: user.image ? user.image.toString('base64') : null,
+      image: imageBase64,
     });
   } else {
     res.status(404);
@@ -93,8 +100,27 @@ export const updateProfile = asyncHandler(async (req, res) => {
     user.department = req.body.department || user.department;
     user.rollNumber = req.body.rollNumber || user.rollNumber;
     user.profileCompleted = true;
+
     if (req.body.image) {
-      user.image = req.body.image; // Save the image buffer
+      // If image is a filename (from compressImage middleware), read the file and store as buffer
+      if (typeof req.body.image === 'string') {
+        try {
+          const __filename = fileURLToPath(import.meta.url);
+          const __dirname = path.dirname(__filename);
+          const imagePath = path.join(__dirname, '..', 'uploads', req.body.image);
+
+          console.log('Reading image file for profile:', imagePath);
+          const imageBuffer = fs.readFileSync(imagePath);
+          user.image = imageBuffer;
+          console.log('Image buffer stored successfully, size:', imageBuffer.length);
+        } catch (error) {
+          console.error('Error reading image file:', error);
+          // If file reading fails, don't update the image
+        }
+      } else {
+        // If image is already a buffer, store it directly
+        user.image = req.body.image;
+      }
     }
 
     if (req.body.password) {
@@ -103,13 +129,17 @@ export const updateProfile = asyncHandler(async (req, res) => {
 
     const updatedUser = await user.save();
 
+    const responseImage = updatedUser.image ? updatedUser.image.toString('base64') : null;
+    console.log('Profile update - Saved image buffer size:', updatedUser.image ? updatedUser.image.length : 'No image');
+    console.log('Profile update - Response base64 length:', responseImage ? responseImage.length : 'No image');
+
     res.json({
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
       role: updatedUser.role,
       profileCompleted: updatedUser.profileCompleted,
-      image: updatedUser.image ? updatedUser.image.toString('base64') : null, // Include image in response as base64
+      image: responseImage,
       token: generateToken(updatedUser._id),
     });
   } else {

@@ -35,7 +35,10 @@ export const getAllComplaints = asyncHandler(async (req, res) => {
   const { status, category, search, page = 1, limit = 10 } = req.query;
   let query = {};
 
-  if (status) {
+  // Exclude resolved complaints by default
+  query.status = { $ne: "resolved" };
+
+  if (status && status !== "resolved") {
     query.status = status;
   }
   if (category) {

@@ -12,6 +12,13 @@ import adminRoutes from "./routes/adminRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
+
+// Check environment variables
+console.log("Environment check:");
+console.log("MONGO_URI:", process.env.MONGO_URI ? "Set" : "NOT SET");
+console.log("JWT_SECRET:", process.env.JWT_SECRET ? "Set" : "NOT SET");
+console.log("PORT:", process.env.PORT || "5000 (default)");
+
 const app = express();
 app.use(cors({
   origin: "http://localhost:5173", // frontend port
@@ -28,9 +35,17 @@ const __dirname = path.dirname(__filename);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect MongoDB
+if (!process.env.MONGO_URI) {
+  console.error("MONGO_URI environment variable is not set!");
+  process.exit(1);
+}
+
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.error(err));
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch(err => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
 
 // Routes
 app.use("/api/users", userRoutes);

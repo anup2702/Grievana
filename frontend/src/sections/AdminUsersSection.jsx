@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MdOutlineCancel } from "react-icons/md";
+import { MdOutlineCancel, MdDelete } from "react-icons/md";
 import API from "../api/axios";
 import { toast } from "react-toastify";
 
@@ -105,8 +105,8 @@ const AdminUsersSection = () => {
                   <span className="text-error">Inactive</span>
                 )}
               </td>
-              <td className="px-4 py-2">
-                {/* Example: Role change dropdown (not fully functional yet) */}
+              <td className="px-4 py-2 flex items-center gap-2">
+                {/* Role change dropdown */}
                 <select
                   value={user.role}
                   onChange={(e) => handleRoleChange(user._id, e.target.value)}
@@ -115,12 +115,15 @@ const AdminUsersSection = () => {
                   <option value="student">Student</option>
                   <option value="admin">Admin</option>
                 </select>
-                {!user.isActive && (
+
+                {/* Remove/Deactivate button for active users */}
+                {user.isActive && (
                   <button
                     onClick={() => handleDeactivateUser(user._id)}
-                    className="ml-2 text-error hover:text-error"
+                    className="text-error hover:text-red-700 transition-colors p-1 rounded hover:bg-red-50"
+                    title="Remove user access"
                   >
-                    <MdOutlineCancel size={20} />
+                    <MdDelete size={20} />
                   </button>
                 )}
               </td>

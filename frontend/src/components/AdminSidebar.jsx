@@ -9,6 +9,7 @@ import {
   // Removed FaEnvelope
 } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
+import { useTheme } from "../contexts/ThemeContext";
 
 const links = [
   { path: "dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
@@ -21,15 +22,20 @@ const links = [
 ];
 
 const AdminSidebar = ({ handleLogout }) => {
+  const { isDarkMode } = useTheme();
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const username = user.name || "Admin";
   const profileImage = user.image ? `data:image/jpeg;base64,${user.image}` : null;
 
   return (
-    <div className="w-64 md:w-72 h-screen bg-theme-primary shadow-theme p-4 md:p-6 flex flex-col">
+    <div className={`w-64 md:w-72 h-screen shadow-theme p-4 md:p-6 flex flex-col transition-colors duration-300 ${
+      isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900'
+    }`}>
       {/* Logo / Header */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-theme-primary hover:text-theme-secondary transition cursor-pointer">
+        <h1 className={`text-2xl font-bold transition-colors cursor-pointer ${
+          isDarkMode ? 'text-white hover:text-gray-300' : 'text-gray-900 hover:text-gray-600'
+        }`}>
           Admin Panel
         </h1>
       </div>
@@ -43,11 +49,15 @@ const AdminSidebar = ({ handleLogout }) => {
             className="w-8 h-8 rounded-full object-cover"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-button-primary flex items-center justify-center text-white font-bold">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
+            isDarkMode ? 'bg-gray-600' : 'bg-black'
+          }`}>
             A
           </div>
         )}
-        <h2 className="text-lg font-semibold text-theme-primary">{username}</h2>
+        <h2 className={`text-lg font-semibold ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>{username}</h2>
       </div>
 
     {/* Navigation Links at Top */}
@@ -57,10 +67,14 @@ const AdminSidebar = ({ handleLogout }) => {
           key={path}
           to={`/admin/${path}`}
           className={({ isActive }) =>
-            `flex items-center gap-2 px-4 py-2 rounded-md text-sm transition ${
+            `flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-colors ${
               isActive
-                ? "bg-button-primary text-white font-semibold"
-                : "bg-theme-secondary text-theme-primary hover:bg-theme-tertiary"
+                ? isDarkMode
+                ? "bg-gray-900 text-white font-semibold"
+                : "bg-black text-white font-semibold"
+                : isDarkMode
+                ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`
           }
         >
@@ -73,7 +87,11 @@ const AdminSidebar = ({ handleLogout }) => {
       {/* Logout Button at Bottom */}
       <button
         onClick={handleLogout}
-        className="mt-6 w-full flex items-center justify-center gap-2 px-4 py-2 bg-error text-white rounded-md font-semibold hover:bg-error transition"
+        className={`mt-6 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md font-semibold transition-colors ${
+          isDarkMode
+            ? 'bg-red-600 text-white hover:bg-red-700'
+            : 'bg-red-500 text-white hover:bg-red-600'
+        }`}
       >
         <IoIosLogOut size={20} />
         Logout

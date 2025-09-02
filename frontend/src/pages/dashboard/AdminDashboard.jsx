@@ -21,9 +21,9 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-theme-secondary flex gap-10 ">
+    <div className="min-h-screen bg-theme-secondary flex gap-10 overflow-hidden">
       {/* Sidebar */}
-      <div className="w-64 bg-theme-primary shadow-theme">
+      <div className="w-64 bg-theme-primary shadow-theme flex-shrink-0">
         <AdminSidebar handleLogout={handleLogout} />
       </div>
 
@@ -31,16 +31,38 @@ const AdminDashboard = () => {
       <div className="flex-grow p-6 min-h-screen w-full">
         <Routes>
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<UserActivityDashboard />} />
-          <Route path="complaints" element={
-            <ErrorBoundary>
-              <AdminComplaintsSection />
-            </ErrorBoundary>
+          <Route path="dashboard" element={
+            <div className="h-[calc(100vh-3rem)] overflow-y-auto">
+              <UserActivityDashboard />
+            </div>
           } />
-          <Route path="users" element={<AdminUsersSection />} />
-          <Route path="analytics" element={<AdminAnalyticsSection />} />
-          <Route path="categories" element={<AdminCategoriesSection />} />
-          <Route path="solved" element={<AdminSolvedComplaintsSection />} /> {/* New route */}
+          <Route path="complaints" element={
+            <div className="h-[calc(100vh-3rem)] overflow-y-auto">
+              <ErrorBoundary>
+                <AdminComplaintsSection />
+              </ErrorBoundary>
+            </div>
+          } />
+          <Route path="users" element={
+            <div className="h-[calc(100vh-3rem)] overflow-y-auto">
+              <AdminUsersSection />
+            </div>
+          } />
+          <Route path="analytics" element={
+            <div className="h-[calc(100vh-3rem)] overflow-y-auto">
+              <AdminAnalyticsSection />
+            </div>
+          } />
+          <Route path="categories" element={
+            <div className="h-[calc(100vh-3rem)] overflow-y-auto">
+              <AdminCategoriesSection />
+            </div>
+          } />
+          <Route path="solved" element={
+            <div className="h-[calc(100vh-3rem)] overflow-y-auto">
+              <AdminSolvedComplaintsSection />
+            </div>
+          } />
           {/* Removed contact page route */}
           {/* <Route path="contact" element={<AdminContactSection />} /> */}
           <Route path="*" element={<Navigate to="dashboard" replace />} />

@@ -21,6 +21,11 @@ const EditProfile = () => {
     const fetchUserData = async () => {
       try {
         const { data } = await axios.get("/users/profile");
+        console.log('Frontend - Profile data received:', {
+          hasImage: !!data.image,
+          imageLength: data.image ? data.image.length : 0
+        });
+
         setFormData({
           name: data.name,
           email: data.email,
@@ -29,10 +34,16 @@ const EditProfile = () => {
           rollNumber: data.rollNumber || "",
           password: "",
         });
+
         if (data.image) {
-          setPreviewImage(`data:image/jpeg;base64,${data.image}`);
+          const imageUrl = `data:image/jpeg;base64,${data.image}`;
+          console.log('Frontend - Setting preview image URL length:', imageUrl.length);
+          setPreviewImage(imageUrl);
+        } else {
+          console.log('Frontend - No image in profile data');
         }
       } catch (error) {
+        console.error('Frontend - Failed to fetch user data:', error);
         toast.error("Failed to fetch user data.");
       }
     };
