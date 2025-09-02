@@ -37,7 +37,7 @@ const ComplaintDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-500">
+      <div className="flex items-center justify-center py-20 text-theme-muted">
         <FaSpinner className="animate-spin mr-2" />
         Loading complaint details...
       </div>
@@ -46,58 +46,58 @@ const ComplaintDetails = () => {
 
   if (!complaint) {
     return (
-      <div className="text-center py-20 text-red-500">
+      <div className="text-center py-20 text-theme-error">
         Complaint not found or an error occurred.
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-md shadow p-6 max-w-4xl mx-auto mt-6">
+    <div className="bg-theme-primary rounded-md shadow-theme p-6 max-w-4xl mx-auto mt-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <h2 className="text-3xl font-bold text-blue-800 mb-4">
+          <h2 className="text-3xl font-bold text-theme-primary mb-4">
             {complaint.title || "Untitled Complaint"}
           </h2>
-          <p className="text-gray-700 mb-4">
+          <p className="text-theme-primary mb-4">
             {complaint.description || "No description provided."}
           </p>
 
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-gray-500">Category</p>
-              <p className="font-semibold">{complaint.category || "—"}</p>
+              <p className="text-theme-muted">Category</p>
+              <p className="font-semibold text-theme-primary">{complaint.category || "—"}</p>
             </div>
             <div>
-              <p className="text-gray-500">Place</p>
-              <p className="font-semibold">{complaint.place || "—"}</p>
+              <p className="text-theme-muted">Place</p>
+              <p className="font-semibold text-theme-primary">{complaint.place || "—"}</p>
             </div>
             <div>
-              <p className="text-gray-500">Status</p>
+              <p className="text-theme-muted">Status</p>
               <p
                 className={`font-semibold ${
                   complaint.status === "resolved"
-                    ? "text-green-600"
-                    : "text-yellow-600"
+                    ? "text-theme-success"
+                    : "text-theme-warning"
                 }`}
               >
                 {complaint.status || "Unknown"}
               </p>
             </div>
             <div>
-              <p className="text-gray-500">Upvotes</p>
-              <p className="font-semibold">{complaint.voted || 0}</p>
+              <p className="text-theme-muted">Upvotes</p>
+              <p className="font-semibold text-theme-primary">{complaint.voted || 0}</p>
             </div>
             <div>
-              <p className="text-gray-500">Submitted On</p>
-              <p className="font-semibold">
+              <p className="text-theme-muted">Submitted On</p>
+              <p className="font-semibold text-theme-primary">
                 {new Date(complaint.createdAt).toLocaleDateString()}
               </p>
             </div>
             {complaint.resolvedAt && (
               <div>
-                <p className="text-gray-500">Resolved On</p>
-                <p className="font-semibold">
+                <p className="text-theme-muted">Resolved On</p>
+                <p className="font-semibold text-theme-primary">
                   {new Date(complaint.resolvedAt).toLocaleDateString()}
                 </p>
               </div>

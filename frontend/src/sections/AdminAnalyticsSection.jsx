@@ -145,43 +145,43 @@ const AdminAnalyticsSection = () => {
   };
 
   if (loading) {
-    return <p className="text-gray-500">Loading analytics...</p>;
+    return <p className="text-theme-muted">Loading analytics...</p>;
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 ">
-      <h2 className="text-2xl font-bold mb-4 text-blue-600">Analytics</h2>
+    <div className="bg-theme-primary rounded-lg shadow-theme p-6 ">
+      <h2 className="text-2xl font-bold mb-4 text-theme-primary">Analytics</h2>
       <div className="flex flex-col gap-8">
         {/* Summary Stats */}
         <div className="flex justify-evenly  grid-cols-2  md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 p-4 rounded text-center">
-            <p className="text-sm font-medium">Total Users</p>
-            <p className="text-xl font-bold text-blue-700">
+          <div className="bg-theme-secondary p-4 rounded text-center">
+            <p className="text-sm font-medium text-theme-primary">Total Users</p>
+            <p className="text-xl font-bold text-theme-primary">
               {stats.totalUsers}
             </p>
           </div>
-          <div className="bg-green-50 p-4 rounded text-center">
-            <p className="text-sm font-medium">Complaints Received</p>
-            <p className="text-xl font-bold text-green-700">
+          <div className="bg-theme-secondary p-4 rounded text-center">
+            <p className="text-sm font-medium text-theme-primary">Complaints Received</p>
+            <p className="text-xl font-bold text-theme-primary">
               {stats.complaintsReceived}
             </p>
           </div>
-          <div className="bg-yellow-50 p-4 rounded text-center">
-            <p className="text-sm font-medium">Resolved Complaints</p>
-            <p className="text-xl font-bold text-yellow-700">
+          <div className="bg-theme-secondary p-4 rounded text-center">
+            <p className="text-sm font-medium text-theme-primary">Resolved Complaints</p>
+            <p className="text-xl font-bold text-theme-primary">
               {stats.resolvedComplaints}
             </p>
           </div>
-          <div className="bg-purple-50 p-4 rounded text-center">
-            <p className="text-sm font-medium">Active Moderators</p>
-            <p className="text-xl font-bold text-purple-700">
+          <div className="bg-theme-secondary p-4 rounded text-center">
+            <p className="text-sm font-medium text-theme-primary">Active Moderators</p>
+            <p className="text-xl font-bold text-theme-primary">
               {stats.activeModerators}
             </p>
           </div>
           {/* Average Resolution Time */}
-          <div className="bg-orange-50 p-4 rounded text-center">
-            <p className="text-sm font-medium">Avg. Resolution Time</p>
-            <p className="text-xl font-bold text-orange-700">
+          <div className="bg-theme-secondary p-4 rounded text-center">
+            <p className="text-sm font-medium text-theme-primary">Avg. Resolution Time</p>
+            <p className="text-xl font-bold text-theme-primary">
               {stats.resolvedComplaints > 0 ? formatTime(stats.averageResolutionTime) : "N/A"}
             </p>
           </div>
@@ -189,42 +189,42 @@ const AdminAnalyticsSection = () => {
 
         <div className="flex h-full">
           {/* Monthly Complaint Trends Chart */}
-        <div className="bg-gray-100 p-4 rounded">
-          <h3 className="text-lg font-semibold mb-2 text-gray-700">
+        <div className="bg-theme-secondary p-4 rounded">
+          <h3 className="text-lg font-semibold mb-2 text-theme-primary">
             Monthly Complaint Trends
           </h3>
           {stats.monthlyComplaints.length > 0 ? (
             <Line data={monthlyChartData} options={monthlyChartOptions} />
           ) : (
-            <div className="flex items-center justify-center h-32 text-gray-500">
+            <div className="flex items-center justify-center h-32 text-theme-muted">
               No monthly complaint data available.
             </div>
           )}
         </div>
 
         {/* Complaints by Category Chart */}
-        <div className="bg-gray-100 p-4 rounded w-100">
-          <h3 className="text-lg font-semibold mb-2 text-gray-700">
+        <div className="bg-theme-secondary p-4 rounded w-100">
+          <h3 className="text-lg font-semibold mb-2 text-theme-primary">
             Complaints by Category
           </h3>
           {stats.complaintsByCategory.length > 0 ? (
             <Pie data={categoryChartData} />
           ) : (
-            <div className="flex items-center justify-center h-32 text-gray-500">
+            <div className="flex items-center justify-center h-32 text-theme-muted">
               No complaint data by category available.
             </div>
           )}
         </div>
 
         {/* Complaints by Location Chart */}
-        <div className="bg-gray-100 p-4 rounded w-100">
-          <h3 className="text-lg font-semibold mb-2 text-gray-700">
+        <div className="bg-theme-secondary p-4 rounded w-100">
+          <h3 className="text-lg font-semibold mb-2 text-theme-primary">
             Complaints by Location
           </h3>
           {stats.complaintsByLocation.length > 0 ? (
             <Pie data={locationChartData} />
           ) : (
-            <div className="flex items-center justify-center h-32 text-gray-500">
+            <div className="flex items-center justify-center h-32 text-theme-muted">
               No complaint data by location available.
             </div>
           )}

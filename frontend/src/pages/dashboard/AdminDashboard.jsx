@@ -1,12 +1,15 @@
 import React from "react";
 import AdminSidebar from "../../components/AdminSidebar";
+import ErrorBoundary from "../../components/ErrorBoundary";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import AdminComplaintsSection from "../../sections/AdminComplaintsSection";
 import AdminUsersSection from "../../sections/AdminUsersSection";
 import AdminAnalyticsSection from "../../sections/AdminAnalyticsSection";
 import AdminCategoriesSection from "../../sections/AdminCategoriesSection"; // Import new component
 import AdminSolvedComplaintsSection from "../../sections/AdminSolvedComplaintsSection"; // Import new component
-import AdminContactSection from "../../sections/AdminContactSection";
+import UserActivityDashboard from "../../sections/UserActivityDashboard"; // Import new component
+// Removed import for AdminContactSection
+// import AdminContactSection from "../../sections/AdminContactSection";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -18,23 +21,29 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex gap-10 ">
+    <div className="min-h-screen bg-theme-secondary flex gap-10 ">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-md">
+      <div className="w-64 bg-theme-primary shadow-theme">
         <AdminSidebar handleLogout={handleLogout} />
       </div>
 
       {/* Main Content */}
       <div className="flex-grow p-6 min-h-screen w-full">
         <Routes>
-          <Route index element={<Navigate to="complaints" replace />} />
-          <Route path="complaints" element={<AdminComplaintsSection />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<UserActivityDashboard />} />
+          <Route path="complaints" element={
+            <ErrorBoundary>
+              <AdminComplaintsSection />
+            </ErrorBoundary>
+          } />
           <Route path="users" element={<AdminUsersSection />} />
           <Route path="analytics" element={<AdminAnalyticsSection />} />
           <Route path="categories" element={<AdminCategoriesSection />} />
           <Route path="solved" element={<AdminSolvedComplaintsSection />} /> {/* New route */}
-          <Route path="contact" element={<AdminContactSection />} />
-          <Route path="*" element={<Navigate to="complaints" replace />} />
+          {/* Removed contact page route */}
+          {/* <Route path="contact" element={<AdminContactSection />} /> */}
+          <Route path="*" element={<Navigate to="dashboard" replace />} />
         </Routes>
       </div>
     </div>

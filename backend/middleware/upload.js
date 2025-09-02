@@ -7,11 +7,11 @@ const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
 
-export const compressImage = async (req, res, next) => {
+const compressImage = async (req, res, next) => {
   if (!req.file) return next();
 
   const filename = `complaint-${Date.now()}.jpeg`;
-  const uploadsDir = path.join("backend", "uploads");
+  const uploadsDir = path.join(__dirname, "..", "uploads");
   const filepath = path.join(uploadsDir, filename);
 
   // Ensure the uploads directory exists
@@ -29,4 +29,5 @@ export const compressImage = async (req, res, next) => {
   next();
 };
 
+export { compressImage };
 export default upload;

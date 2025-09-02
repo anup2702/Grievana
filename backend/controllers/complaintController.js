@@ -1,17 +1,31 @@
 import asyncHandler from "express-async-handler";
 import Complaint from "../models/Complaint.js";
+import { analyzeComplaint } from "../geminiService.js";
 
 // Create a new complaint
 export const createComplaint = asyncHandler(async (req, res) => {
-  const { title, description, category, image } = req.body;
+  const { title, description, category, location, priority, image } = req.body;
+
+  // Analyze the complaint using rule-based analysis for spam/offensive check
+  const analysis = await analyzeComplaint(title, description);
+
+  if (analysis.isSpam || analysis.isOffensive) {
+    res.status(400).json({ message: "Complaint cannot be registered. It has been flagged as spam or offensive." });
+    return;
+  }
 
   const complaint = new Complaint({
     user: req.user.id,
     title,
     description,
     category,
+    location,
+    priority,
+    summary: analysis.summary,
     image, // Save the image filename
     status: "pending", // Default status for new complaints
+    isSpam: analysis.isSpam,
+    isOffensive: analysis.isOffensive,
   });
 
   const createdComplaint = await complaint.save();
@@ -26,7 +40,7 @@ export const getUserComplaints = asyncHandler(async (req, res) => {
 
 // Get all complaints (for admin or general feed)
 export const getAllComplaints = asyncHandler(async (req, res) => {
-  const { status, category, search } = req.query;
+  const { status, category, search, page = 1, limit = 10 } = req.query;
   let query = {};
 
   if (status) {
@@ -42,31 +56,44 @@ export const getAllComplaints = asyncHandler(async (req, res) => {
     ];
   }
 
+  const pageNum = parseInt(page);
+  const limitNum = parseInt(limit);
+  const skip = (pageNum - 1) * limitNum;
+
+  const totalComplaints = await Complaint.countDocuments(query);
+  const totalPages = Math.ceil(totalComplaints / limitNum);
+
   const complaints = await Complaint.find(query)
     .populate({
       path: "user",
       select: "name image",
-      transform: (doc) => {
-        if (doc && doc.image) {
-          return { ...doc._doc, image: doc.image.toString('base64') };
-        }
-        return doc;
-      },
     })
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limitNum);
 
   const populatedComplaints = complaints.map(complaint => {
     const complaintObject = complaint.toObject();
     if (complaintObject.user && complaintObject.user.image) {
       complaintObject.user.image = complaintObject.user.image.toString('base64');
     }
-    if (complaintObject.image) {
-      complaintObject.image = `data:image/jpeg;base64,${complaintObject.image.toString('base64')}`;
-    }
+    // Remove base64 conversion for complaint image, use filename directly
+    // if (complaintObject.image) {
+    //   complaintObject.image = `data:image/jpeg;base64,${complaintObject.image.toString('base64')}`;
+    // }
     return complaintObject;
   });
 
-  res.json(populatedComplaints);
+  res.json({
+    complaints: populatedComplaints,
+    pagination: {
+      currentPage: pageNum,
+      totalPages,
+      totalComplaints,
+      hasNextPage: pageNum < totalPages,
+      hasPrevPage: pageNum > 1,
+    },
+  });
 });
 
 // Get a single complaint by ID
@@ -77,9 +104,10 @@ export const getComplaintById = asyncHandler(async (req, res) => {
   );
 
   if (complaint) {
-    if (complaint.image) {
-      complaint.image = `data:image/jpeg;base64,${complaint.image.toString('base64')}`;
-    }
+    // Remove base64 conversion for complaint image, use filename directly
+    // if (complaint.image) {
+    //   complaint.image = `data:image/jpeg;base64,${complaint.image.toString('base64')}`;
+    // }
     res.json(complaint);
   } else {
     res.status(404);
@@ -89,7 +117,7 @@ export const getComplaintById = asyncHandler(async (req, res) => {
 
 // Update a complaint
 export const updateComplaint = asyncHandler(async (req, res) => {
-  const { title, description, category } = req.body;
+  const { title, description, category, location, priority } = req.body;
 
   const complaint = await Complaint.findById(req.params.id);
 
@@ -97,6 +125,8 @@ export const updateComplaint = asyncHandler(async (req, res) => {
     complaint.title = title || complaint.title;
     complaint.description = description || complaint.description;
     complaint.category = category || complaint.category;
+    complaint.location = location || complaint.location;
+    complaint.priority = priority || complaint.priority;
 
     const updatedComplaint = await complaint.save();
     res.json(updatedComplaint);
@@ -116,6 +146,11 @@ export const updateComplaintStatus = asyncHandler(async (req, res) => {
   if (complaint) {
     console.log("Backend: Complaint found:", complaint);
     complaint.status = status || complaint.status;
+
+    // Set resolvedAt timestamp when status is changed to "resolved"
+    if (status === "resolved") {
+      complaint.resolvedAt = new Date();
+    }
 
     const updatedComplaint = await complaint.save();
     console.log("Backend: Complaint updated successfully:", updatedComplaint);

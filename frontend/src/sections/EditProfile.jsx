@@ -85,24 +85,24 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="flex-1 min-h-screen flex flex-col bg-white rounded-lg shadow-md p-6">
+    <div className="flex-1 min-h-screen flex flex-col bg-theme-primary rounded-lg shadow-theme p-6">
       <ToastContainer position="top-right" theme="colored" />
 
-      <h2 className="text-2xl font-bold text-blue-600 mb-6">Edit Profile</h2>
+      <h2 className="text-2xl font-bold text-theme-primary mb-6">Edit Profile</h2>
 
       {/* Profile Icon / Image Preview */}
       <div className="flex items-center justify-center mb-6">
         {previewImage ? (
           <img src={previewImage} alt="Profile Preview" className="w-24 h-24 rounded-full object-cover" />
         ) : (
-          <CgProfile size={80} className="text-blue-500" />
+          <CgProfile size={80} className="text-theme-primary" />
         )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5 px-2 md:px-4">
         {/* Name */}
         <div className="flex flex-col">
-          <label htmlFor="name" className="text-sm font-medium text-gray-700">Name</label>
+          <label htmlFor="name" className="text-sm font-medium text-theme-primary">Name</label>
           <input
             type="text"
             id="name"
@@ -110,13 +110,13 @@ const EditProfile = () => {
             required
             value={formData.name}
             readOnly
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed text-sm"
+            className="mt-1 px-3 py-2 border border-theme rounded-md bg-theme-secondary cursor-not-allowed text-sm"
           />
         </div>
 
         {/* Email */}
         <div className="flex flex-col">
-          <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
+          <label htmlFor="email" className="text-sm font-medium text-theme-primary">Email</label>
           <input
             type="email"
             id="email"
@@ -124,13 +124,13 @@ const EditProfile = () => {
             required
             value={formData.email}
             readOnly
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed text-sm"
+            className="mt-1 px-3 py-2 border border-theme rounded-md bg-theme-secondary cursor-not-allowed text-sm"
           />
         </div>
 
         {/* Phone */}
         <div className="flex flex-col">
-          <label htmlFor="phone" className="text-sm font-medium text-gray-700">Phone</label>
+          <label htmlFor="phone" className="text-sm font-medium text-theme-primary">Phone</label>
           <input
             type="text"
             id="phone"
@@ -138,13 +138,13 @@ const EditProfile = () => {
             required
             value={formData.phone}
             onChange={handleChange}
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            className="mt-1 px-3 py-2 border border-theme rounded-md focus:ring-2 focus:ring-button-primary"
           />
         </div>
 
         {/* Department */}
         <div className="flex flex-col">
-          <label htmlFor="department" className="text-sm font-medium text-gray-700">Department</label>
+          <label htmlFor="department" className="text-sm font-medium text-theme-primary">Department</label>
           <input
             type="text"
             id="department"
@@ -152,13 +152,13 @@ const EditProfile = () => {
             required
             value={formData.department}
             onChange={handleChange}
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            className="mt-1 px-3 py-2 border border-theme rounded-md focus:ring-2 focus:ring-button-primary"
           />
         </div>
 
         {/* Roll Number */}
         <div className="flex flex-col">
-          <label htmlFor="rollNumber" className="text-sm font-medium text-gray-700">Roll Number</label>
+          <label htmlFor="rollNumber" className="text-sm font-medium text-theme-primary">Roll Number</label>
           <input
             type="text"
             id="rollNumber"
@@ -166,26 +166,26 @@ const EditProfile = () => {
             required
             value={formData.rollNumber}
             onChange={handleChange}
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            className="mt-1 px-3 py-2 border border-theme rounded-md focus:ring-2 focus:ring-button-primary"
           />
         </div>
 
         {/* Profile Image Upload */}
         <div className="flex flex-col">
-          <label htmlFor="profileImage" className="text-sm font-medium text-gray-700">Profile Image (Optional)</label>
+          <label htmlFor="profileImage" className="text-sm font-medium text-theme-primary">Profile Image (Optional)</label>
           <input
             type="file"
             id="profileImage"
             name="profileImage"
             accept="image/*"
             onChange={handleImageChange}
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mt-1 px-3 py-2 border border-theme rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-button-primary"
           />
         </div>
 
         {/* Password */}
         <div className="flex flex-col">
-          <label htmlFor="password" className="text-sm font-medium text-gray-700">New Password <span className="text-gray-500">(optional)</span></label>
+          <label htmlFor="password" className="text-sm font-medium text-theme-primary">New Password <span className="text-theme-muted">(optional)</span></label>
           <input
             type="password"
             id="password"
@@ -193,7 +193,7 @@ const EditProfile = () => {
             value={formData.password}
             onChange={handleChange}
             placeholder="Leave blank to keep current password"
-            className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 text-sm"
+            className="mt-1 px-3 py-2 border border-theme rounded-md focus:ring-2 focus:ring-button-primary text-sm"
           />
         </div>
 
@@ -201,7 +201,7 @@ const EditProfile = () => {
         <div className="flex justify-center pt-2">
           <button
             type="submit"
-            className="w-full max-w-md bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full max-w-md button-theme-primary px-4 py-2 rounded-md font-semibold transition focus:outline-none focus:ring-2 focus:ring-button-primary"
           >
             Save Changes
           </button>

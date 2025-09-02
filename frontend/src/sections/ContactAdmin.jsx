@@ -53,21 +53,21 @@ const contacts = [
 
 const ContactAdmin = () => {
   return (
-    <div className="flex-1 min-h-screen flex flex-col bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold mb-6 text-blue-600">Contact Details</h2>
+    <div className="flex-1 min-h-screen flex flex-col bg-theme-primary rounded-lg shadow-theme p-6">
+      <h2 className="text-2xl font-bold mb-6 text-theme-primary">Contact Details</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {contacts.map((contact) => (
-          <div key={contact._id} className="bg-gray-100 p-4 rounded-lg text-center">
+          <div key={contact._id} className="bg-theme-secondary p-4 rounded-lg text-center">
             <img src={contact.imageUrl} alt={contact.name} className="w-24 h-24 rounded-full mx-auto mb-4" />
-            <h3 className="font-bold text-lg mb-2">{contact.name}</h3>
-            <p className="text-sm">
+            <h3 className="font-bold text-lg mb-2 text-theme-primary">{contact.name}</h3>
+            <p className="text-sm text-theme-secondary">
               <strong>Department:</strong> {contact.department}
             </p>
-            <p className="text-sm">
-              <strong>Email:</strong> <a href={`mailto:${contact.email}`} className="text-blue-600 hover:underline">{contact.email}</a>
+            <p className="text-sm text-theme-secondary">
+              <strong>Email:</strong> <a href={`mailto:${contact.email}`} className="text-theme-primary hover:underline">{contact.email}</a>
             </p>
-            <p className="text-sm">
-              <strong>Phone:</strong> <a href={`tel:${contact.phone}`} className="text-blue-600 hover:underline">{contact.phone}</a>
+            <p className="text-sm text-theme-secondary">
+              <strong>Phone:</strong> <a href={`tel:${contact.phone}`} className="text-theme-primary hover:underline">{contact.phone}</a>
             </p>
           </div>
         ))}

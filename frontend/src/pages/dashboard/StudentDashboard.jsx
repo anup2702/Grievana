@@ -9,7 +9,7 @@ import ContactAdmin from "../../sections/ContactAdmin";
 
 const StudentDashboard = () => {
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-theme-secondary overflow-hidden">
       
       {/* Sidebar Navigation */}
       <StudentSidebar />

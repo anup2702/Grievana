@@ -2,7 +2,7 @@ import React from "react";
 
 const Button = ({ children, className = "", ...props }) => (
   <button
-    className={`px-4 py-2 rounded-md font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue-500 bg-blue-600 text-white hover:bg-blue-700 ${className}`}
+    className={`px-4 py-2 rounded-md font-semibold transition focus:outline-none focus:ring-2 focus:ring-button-primary bg-button-primary text-white hover:bg-button-hover ${className}`}
     {...props}
   >
     {children}

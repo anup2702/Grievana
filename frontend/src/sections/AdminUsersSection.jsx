@@ -61,16 +61,16 @@ const AdminUsersSection = () => {
   );
 
   if (loading) {
-    return <p className="text-gray-500">Loading users...</p>;
+    return <p className="text-theme-muted">Loading users...</p>;
   }
 
   if (users.length === 0) {
-    return <p className="text-gray-400">No users found.</p>;
+    return <p className="text-theme-muted">No users found.</p>;
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-2xl font-bold mb-4 text-blue-600">Manage Users</h2>
+    <div className="bg-theme-primary rounded-lg shadow-theme p-6">
+      <h2 className="text-2xl font-bold mb-4 text-theme-primary">Manage Users</h2>
 
       <div className="mb-4">
         <input
@@ -78,31 +78,31 @@ const AdminUsersSection = () => {
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg"
+          className="w-full px-4 py-2 border-theme rounded-lg input-theme"
         />
       </div>
 
-      <table className="min-w-full table-auto border">
+      <table className="min-w-full table-auto border-theme">
         <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">Role</th>
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Actions</th>
+          <tr className="bg-theme-secondary text-left">
+            <th className="px-4 py-2 text-theme-primary">Name</th>
+            <th className="px-4 py-2 text-theme-primary">Email</th>
+            <th className="px-4 py-2 text-theme-primary">Role</th>
+            <th className="px-4 py-2 text-theme-primary">Status</th>
+            <th className="px-4 py-2 text-theme-primary">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredUsers.map((user) => (
-            <tr key={user._id} className="border-t">
-              <td className="px-4 py-2">{user.name}</td>
-              <td className="px-4 py-2">{user.email}</td>
-              <td className="px-4 py-2">{user.role}</td>
+            <tr key={user._id} className="border-theme">
+              <td className="px-4 py-2 text-theme-primary">{user.name}</td>
+              <td className="px-4 py-2 text-theme-primary">{user.email}</td>
+              <td className="px-4 py-2 text-theme-primary">{user.role}</td>
               <td className="px-4 py-2">
                 {user.isActive ? (
-                  <span className="text-green-600">Active</span>
+                  <span className="text-success">Active</span>
                 ) : (
-                  <span className="text-red-600">Inactive</span>
+                  <span className="text-error">Inactive</span>
                 )}
               </td>
               <td className="px-4 py-2">
@@ -110,7 +110,7 @@ const AdminUsersSection = () => {
                 <select
                   value={user.role}
                   onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                  className="border rounded px-2 py-1 text-sm"
+                  className="border-theme rounded px-2 py-1 text-sm input-theme"
                 >
                   <option value="student">Student</option>
                   <option value="admin">Admin</option>
@@ -118,7 +118,7 @@ const AdminUsersSection = () => {
                 {!user.isActive && (
                   <button
                     onClick={() => handleDeactivateUser(user._id)}
-                    className="ml-2 text-red-600 hover:text-red-800"
+                    className="ml-2 text-error hover:text-error"
                   >
                     <MdOutlineCancel size={20} />
                   </button>

@@ -70,7 +70,40 @@ The project is organized into two main directories:
      ```
      MONGO_URI=your_mongodb_connection_string
      JWT_SECRET=your_jwt_secret
+     GEMINI_API_KEY=your_gemini_api_key
      ```
+
+#### Gen AI Setup (Gemini API)
+
+The application uses Google's Gemini AI to analyze complaints for spam detection, content classification, and automatic summarization.
+
+**Steps to get your Gemini API key:**
+
+1. **Go to Google AI Studio:**
+   - Visit [Google AI Studio](https://aistudio.google.com/)
+   - Sign in with your Google account
+
+2. **Create a new API key:**
+   - Click on "Get API key" in the left sidebar
+   - Click "Create API key"
+   - Copy the generated API key
+
+3. **Add to environment variables:**
+   - In your `backend/.env` file, add:
+     ```
+     GEMINI_API_KEY=your_actual_api_key_here
+     ```
+
+4. **Enable Gemini API:**
+   - The API key should work immediately for Gemini 1.5 Flash model
+   - No additional setup required
+
+**What the Gen AI does:**
+- Analyzes complaint content for spam and offensive material
+- Automatically categorizes complaints (Academic, Infrastructure, Hostel, Transport, Faculty, Other)
+- Assigns priority levels (High, Medium, Low)
+- Generates brief summaries of complaints
+- Blocks spam/offensive complaints from being registered
 
 ### Running the Application
 

@@ -32,7 +32,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 
 // Get all complaints with filtering and searching
 export const getAllComplaints = asyncHandler(async (req, res) => {
-  const { status, category, search } = req.query;
+  const { status, category, search, page = 1, limit = 10 } = req.query;
   let query = {};
 
   if (status) {
@@ -48,8 +48,29 @@ export const getAllComplaints = asyncHandler(async (req, res) => {
     ];
   }
 
-  const complaints = await Complaint.find(query).populate("user", "name email");
-  res.json(complaints);
+  const pageNum = parseInt(page);
+  const limitNum = parseInt(limit);
+  const skip = (pageNum - 1) * limitNum;
+
+  const totalComplaints = await Complaint.countDocuments(query);
+  const totalPages = Math.ceil(totalComplaints / limitNum);
+
+  const complaints = await Complaint.find(query)
+    .populate("user", "name email")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limitNum);
+
+  res.json({
+    complaints,
+    pagination: {
+      currentPage: pageNum,
+      totalPages,
+      totalComplaints,
+      hasNextPage: pageNum < totalPages,
+      hasPrevPage: pageNum > 1,
+    },
+  });
 });
 
 // Get all solved complaints
@@ -64,15 +85,25 @@ export const getSolvedComplaints = asyncHandler(async (req, res) => {
 export const resolveComplaint = asyncHandler(async (req, res) => {
   const complaint = await Complaint.findById(req.params.id);
 
-  if (complaint) {
-    complaint.status = "resolved";
-    complaint.resolvedAt = new Date(); // Set resolvedAt timestamp
-    const updatedComplaint = await complaint.save();
-    res.json(updatedComplaint);
-  } else {
-    res.status(404);
-    throw new Error("Complaint not found");
+  if (!complaint) {
+    return res.status(404).json({ message: "Complaint not found" });
   }
+
+  const { status } = req.body;
+
+  // Use findByIdAndUpdate to avoid validation issues with missing fields
+  const updateData = { status: status || "resolved" };
+  if (status === "resolved") {
+    updateData.resolvedAt = new Date(); // Set resolvedAt timestamp only when resolved
+  }
+
+  const updatedComplaint = await Complaint.findByIdAndUpdate(
+    req.params.id,
+    updateData,
+    { new: true, runValidators: false } // Skip validation to avoid location requirement
+  );
+
+  res.json(updatedComplaint);
 });
 
 // Get analytics data

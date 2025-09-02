@@ -1,0 +1,13 @@
+- [x] Update FeedSection.jsx to use theme classes
+- [x] Update StudentSidebar.jsx to use theme classes
+- [x] Update SolvedSection.jsx to use theme classes
+- [ ] Update AdminContactSection.jsx to use theme classes
+- [ ] Update RegisterComplaintPage.jsx to use theme classes
+- [ ] Update AdminSolvedComplaintsSection.jsx to use theme classes
+- [ ] Update UserActivityDashboard.jsx to use theme classes
+- [ ] Update AdminComplaintsSection.jsx to use theme classes
+- [ ] Update AdminSidebar.jsx to use theme classes
+- [ ] Update AdminDashboard.jsx to use theme classes
+- [ ] Update StudentDashboard.jsx to use theme classes
+- [ ] Update other pages/components as needed
+- [ ] Test theme toggle functionality

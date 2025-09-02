@@ -50,14 +50,14 @@ const RegisterPage = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-50 px-4">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-lg px-8 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-theme-primary px-4">
+      <div className="w-full max-w-md bg-theme-primary rounded-3xl shadow-theme px-8 py-10">
         
         {/* Logo + Heading */}
         <div className="text-center mb-6">
           <img src="/logo.png" alt="Grievana Logo" className="h-14 mx-auto mb-4" />
-          <h2 className="text-3xl font-bold text-gray-800">Create Account 🚀</h2>
-          <p className="text-sm text-gray-500">It only takes a few steps</p>
+          <h2 className="text-3xl font-bold text-theme-primary">Create Account 🚀</h2>
+          <p className="text-sm text-theme-muted">It only takes a few steps</p>
         </div>
 
         {/* Registration Form */}
@@ -65,28 +65,28 @@ const RegisterPage = () => {
           
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-theme-primary mb-1">Email</label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 border border-theme rounded-md text-sm focus:ring-2 focus:ring-button-primary focus:outline-none"
               required
             />
           </div>
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-theme-primary mb-1">Password</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-4 py-2 border border-theme rounded-md text-sm focus:ring-2 focus:ring-button-primary focus:outline-none"
               required
             />
           </div>
@@ -100,8 +100,8 @@ const RegisterPage = () => {
                 onClick={() => setRole(r)}
                 className={`px-4 py-1.5 rounded-md text-sm font-medium border transition ${
                   role === r
-                    ? 'bg-blue-600 text-white border-blue-600 shadow'
-                    : 'bg-gray-100 text-blue-600 border-gray-300 hover:bg-blue-50'
+                    ? 'bg-button-primary text-white border-button-primary shadow'
+                    : 'bg-theme-secondary text-theme-primary border-theme hover:bg-theme-primary'
                 }`}
               >
                 {r.charAt(0).toUpperCase() + r.slice(1)}
@@ -112,16 +112,16 @@ const RegisterPage = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full py-2 bg-blue-600 text-white text-sm rounded-md font-semibold hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full py-2 bg-button-primary text-white text-sm rounded-md font-semibold hover:bg-button-hover transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-button-primary"
           >
             Register
           </button>
         </form>
 
         {/* Footer */}
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-theme-secondary">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 font-medium hover:underline">
+          <Link to="/login" className="text-theme-primary font-medium hover:underline">
             Login
           </Link>
         </p>

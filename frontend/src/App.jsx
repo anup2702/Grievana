@@ -13,10 +13,32 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import RegisterComplaintPage from './sections/RegisterComplaintPage';
 import ComplaintDetails from './components/ComplaintDetails';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
-function App() {
+const ThemeToggle = () => {
+  const { isDarkMode, toggleTheme } = useTheme();
+
   return (
-    <div className="w-full min-h-screen bg-white">
+    <button
+      className="theme-toggle-navbar"
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+      title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+    >
+      <span className="theme-toggle-icon">
+        {isDarkMode ? '☀️' : '🌙'}
+      </span>
+    </button>
+  );
+};
+
+
+
+const AppContent = () => {
+  const { isDarkMode } = useTheme();
+
+  return (
+    <div className="w-full min-h-screen bg-theme-primary">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -27,12 +49,27 @@ function App() {
           <Route path="/admin/complaints/:id" element={<ComplaintDetails />} />
         </Route>
         <Route path="/register-complaint" element={<RegisterComplaintPage />} />
-
-
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        theme={isDarkMode ? 'dark' : 'light'}
+      />
+
+      {/* Theme toggle button below navbar on right across all pages */}
+      <div className="fixed top-16 right-4 z-50">
+        <ThemeToggle />
+      </div>
     </div>
+  );
+};
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

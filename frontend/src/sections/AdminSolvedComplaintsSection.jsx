@@ -10,7 +10,9 @@ const AdminSolvedComplaintsSection = () => {
     const fetchSolvedComplaints = async () => {
       try {
         const res = await API.get("/admin/solved-complaints");
-        setComplaints(res.data);
+        // Ensure res.data is an array before setting
+        const complaintsData = Array.isArray(res.data) ? res.data : (res.data?.complaints || []);
+        setComplaints(complaintsData);
       } catch (err) {
         toast.error("Failed to load solved complaints");
         console.error("Fetch error:", err);
@@ -22,19 +24,19 @@ const AdminSolvedComplaintsSection = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-gray-500">Loading solved complaints...</p>;
+    return <p className="text-theme-muted">Loading solved complaints...</p>;
   }
 
   if (complaints.length === 0) {
-    return <p className="text-gray-400">No solved complaints found.</p>;
+    return <p className="text-theme-muted">No solved complaints found.</p>;
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-2xl font-bold mb-4 text-blue-600">Solved Complaints</h2>
-      <table className="min-w-full table-auto border">
+    <div className="bg-theme-primary rounded-lg shadow-theme p-6">
+      <h2 className="text-2xl font-bold mb-4 text-theme-primary">Solved Complaints</h2>
+      <table className="min-w-full table-auto border-theme">
         <thead>
-          <tr className="bg-gray-100 text-left">
+          <tr className="bg-theme-secondary text-left">
             <th className="px-4 py-2">User</th>
             <th className="px-4 py-2">Issue</th>
             <th className="px-4 py-2">Status</th>
@@ -43,11 +45,13 @@ const AdminSolvedComplaintsSection = () => {
         </thead>
         <tbody>
           {complaints.map((complaint) => (
-            <tr key={complaint._id} className="border-t">
-              <td className="px-4 py-2">{complaint.user?.name || "Unknown"}</td>
-              <td className="px-4 py-2">{complaint.title}</td>
-              <td className="px-4 py-2">{complaint.status}</td>
-              <td className="px-4 py-2">{new Date(complaint.resolvedAt).toLocaleDateString()}</td>
+            <tr key={complaint._id} className="border-t border-theme">
+              <td className="px-4 py-2 text-theme-primary">{complaint.user?.name || "Unknown"}</td>
+              <td className="px-4 py-2 text-theme-primary">{complaint.title}</td>
+              <td className="px-4 py-2 text-theme-primary">{complaint.status}</td>
+              <td className="px-4 py-2 text-theme-primary">
+                {complaint.resolvedAt ? new Date(complaint.resolvedAt).toLocaleDateString() : "Not set"}
+              </td>
             </tr>
           ))}
         </tbody>
