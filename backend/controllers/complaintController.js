@@ -26,8 +26,7 @@ export const createComplaint = asyncHandler(async (req, res) => {
       return;
     }
 
-    const complaint = new Complaint({
-      user: req.user.id,
+    const complaintData = {
       title,
       description,
       category,
@@ -38,7 +37,13 @@ export const createComplaint = asyncHandler(async (req, res) => {
       status: "pending", // Default status for new complaints
       isSpam: analysis.isSpam,
       isOffensive: analysis.isOffensive,
-    });
+    };
+
+    if (req.user && req.user.id) {
+      complaintData.user = req.user.id;
+    }
+
+    const complaint = new Complaint(complaintData);
 
     console.log("Saving complaint:", complaint);
     const createdComplaint = await complaint.save();

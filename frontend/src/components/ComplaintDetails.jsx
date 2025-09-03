@@ -102,6 +102,17 @@ const ComplaintDetails = () => {
                 </p>
               </div>
             )}
+            {complaint.user ? (
+              <div>
+                <p className="text-theme-muted">Submitted By</p>
+                <p className="font-semibold text-theme-primary">{complaint.user.name || "Unknown User"}</p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-theme-muted">Submitted By</p>
+                <p className="font-semibold text-theme-primary">Anonymous</p>
+              </div>
+            )}
           </div>
         </div>
 

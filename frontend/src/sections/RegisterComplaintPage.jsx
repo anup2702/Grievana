@@ -12,6 +12,7 @@ const RegistrationSection = () => {
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
+  const [sendAnonymously, setSendAnonymously] = useState(false);
 
   const navigate = useNavigate();
 
@@ -94,7 +95,7 @@ const RegistrationSection = () => {
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    if (!user || !user._id) {
+    if (!sendAnonymously && (!user || !user._id)) {
       toast.error("User data not found. Please log in again.");
       navigate("/login");
       return;
@@ -106,7 +107,9 @@ const RegistrationSection = () => {
     formData.append("category", category);
     formData.append("location", location);
     formData.append("priority", priority);
-    formData.append("user", user._id);
+    if (!sendAnonymously) {
+      formData.append("user", user._id);
+    }
     if (image) {
       formData.append("image", image);
     }
@@ -136,27 +139,39 @@ const RegistrationSection = () => {
       <h2 className="text-2xl font-bold mb-6 text-theme-primary">
         Complaint Registration
       </h2>
-      
+
       <form onSubmit={handleComplaintSubmit} className="space-y-6 px-4 md:px-8">
-        
-      {/* Title */}
-      <div className="flex flex-col">
-        <label htmlFor="title" className="text-sm font-medium text-theme-primary">
-          Title
-        </label>
-        <input
-          type="text"
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter title"
-          className={`mt-1 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-button-primary input-theme ${
-            errors.title ? 'border-error' : 'border-theme'
-          }`}
-          required
-        />
-        {errors.title && <p className="text-error text-xs mt-1">{errors.title}</p>}
-      </div>
+        <div className="flex items-center space-x-2 mb-4">
+          <input
+            type="checkbox"
+            id="sendAnonymously"
+            checked={sendAnonymously}
+            onChange={() => setSendAnonymously(!sendAnonymously)}
+            className="w-4 h-4 text-button-primary border-theme rounded focus:ring-button-primary"
+          />
+          <label htmlFor="sendAnonymously" className="text-theme-primary text-sm font-medium">
+            Send Anonymously
+          </label>
+        </div>
+
+        {/* Title */}
+        <div className="flex flex-col">
+          <label htmlFor="title" className="text-sm font-medium text-theme-primary">
+            Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter title"
+            className={`mt-1 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-button-primary input-theme ${
+              errors.title ? 'border-error' : 'border-theme'
+            }`}
+            required
+          />
+          {errors.title && <p className="text-error text-xs mt-1">{errors.title}</p>}
+        </div>
 
       {/* Category */}
       <div className="flex flex-col">
