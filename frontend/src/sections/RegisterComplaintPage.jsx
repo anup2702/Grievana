@@ -107,6 +107,7 @@ const RegistrationSection = () => {
     formData.append("category", category);
     formData.append("location", location);
     formData.append("priority", priority);
+    formData.append("sendAnonymously", sendAnonymously);
     if (!sendAnonymously) {
       formData.append("user", user._id);
     }

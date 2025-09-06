@@ -9,22 +9,22 @@ Grievana is a full-stack web application designed to streamline the process of r
 ### For Students:
 - **User Authentication:** Secure registration and login functionality.
 - **Complaint Submission:** Easily register new complaints with details and attachments.
+- **Anonymous Complaint Submission:** Option to submit complaints anonymously without revealing user identity.
 - **Dashboard:** View the status of submitted complaints (pending, in-progress, resolved).
 - **Profile Management:** Update personal information.
-- **Contact Admin:** A dedicated section to contact administrators.
 
 ### For Administrators:
 - **Admin Dashboard:** A central hub for managing the entire system.
 - **User Management:** View and manage all registered users.
 - **Complaint Management:** Track, update, and categorize all user complaints.
 - **Analytics:** Visualize complaint statistics and trends.
-- **Contact Messages:** View and respond to messages from users.
 
 ## Tech Stack
 
 - **Frontend:**
   - React (with Vite)
   - Axios (for API requests)
+  - Chart.js and React-Chartjs-2 (for data visualization)
   - CSS (with potential for a framework like Tailwind CSS or Material-UI)
 
 - **Backend:**
@@ -70,40 +70,7 @@ The project is organized into two main directories:
      ```
      MONGO_URI=your_mongodb_connection_string
      JWT_SECRET=your_jwt_secret
-     GEMINI_API_KEY=your_gemini_api_key
      ```
-
-#### Gen AI Setup (Gemini API)
-
-The application uses Google's Gemini AI to analyze complaints for spam detection, content classification, and automatic summarization.
-
-**Steps to get your Gemini API key:**
-
-1. **Go to Google AI Studio:**
-   - Visit [Google AI Studio](https://aistudio.google.com/)
-   - Sign in with your Google account
-
-2. **Create a new API key:**
-   - Click on "Get API key" in the left sidebar
-   - Click "Create API key"
-   - Copy the generated API key
-
-3. **Add to environment variables:**
-   - In your `backend/.env` file, add:
-     ```
-     GEMINI_API_KEY=your_actual_api_key_here
-     ```
-
-4. **Enable Gemini API:**
-   - The API key should work immediately for Gemini 1.5 Flash model
-   - No additional setup required
-
-**What the Gen AI does:**
-- Analyzes complaint content for spam and offensive material
-- Automatically categorizes complaints (Academic, Infrastructure, Hostel, Transport, Faculty, Other)
-- Assigns priority levels (High, Medium, Low)
-- Generates brief summaries of complaints
-- Blocks spam/offensive complaints from being registered
 
 ### Running the Application
 
@@ -118,6 +85,13 @@ The application uses Google's Gemini AI to analyze complaints for spam detection
    npm run dev
    ```
 
-## Contributing
+## Testing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue.
+The backend includes unit and integration tests using Jest and Supertest.
+
+To run the tests:
+
+```sh
+cd backend
+npm test
+```

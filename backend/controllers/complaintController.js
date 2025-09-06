@@ -7,7 +7,7 @@ export const createComplaint = asyncHandler(async (req, res) => {
   console.log("Creating complaint - Request body:", req.body);
   console.log("Creating complaint - User from token:", req.user);
 
-  const { title, description, category, location, priority, image } = req.body;
+  const { title, description, category, location, priority, image, sendAnonymously } = req.body;
 
   // Validate required fields
   if (!title || !description || !category || !location) {
@@ -39,7 +39,7 @@ export const createComplaint = asyncHandler(async (req, res) => {
       isOffensive: analysis.isOffensive,
     };
 
-    if (req.user && req.user.id) {
+    if (req.user && req.user.id && sendAnonymously !== 'true') {
       complaintData.user = req.user.id;
     }
 
