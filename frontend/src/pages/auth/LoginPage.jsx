@@ -97,6 +97,30 @@ const LoginPage = () => {
             />
           </div>
 
+          {/* Test Credentials for Quick Testing */}
+          <div className="text-center mt-2 space-x-4">
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('test.user2025@iem.edu.in');
+                setPassword('user12345');
+              }}
+              className="text-xs text-blue-500 hover:underline"
+            >
+              Use Test User
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('test.admin2025@iem.edu.in');
+                setPassword('admin12345');
+              }}
+              className="text-xs text-blue-500 hover:underline"
+            >
+              Use Test Admin
+            </button>
+          </div>
+
           <button
             type="submit"
             disabled={loading}

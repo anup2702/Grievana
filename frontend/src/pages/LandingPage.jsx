@@ -361,10 +361,10 @@ const Landing = () => {
         </div>
       </motion.section>
 
-      {/* 🎯 Footer */}
+      {/*  Footer */}
       <footer className="w-full border-t border-theme bg-theme-primary shadow-theme py-4 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-theme-secondary">
-          {/* 🧠 Developer Info */}
+          {/*  Developer Info */}
           <motion.div
             className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-center md:text-left"
             initial={{ opacity: 0 }}
@@ -372,17 +372,17 @@ const Landing = () => {
             transition={{ delay: 0.5 }}
           >
             <h4 className="font-semibold text-theme-primary">Developed By</h4>
-            <p>Team Syntax Slayers, IEM Kolkata</p>
+            <a href="https://www.linkedin.com/in/anup001">Anup Kumar</a>
           </motion.div>
 
-          {/* 📬 Contact Info */}
+          {/*  Contact Info */}
           <motion.p
             className="text-center md:text-right"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
-            📧 support@grievana.in
+             support@grievana.in
           </motion.p>
         </div>
       </footer>
