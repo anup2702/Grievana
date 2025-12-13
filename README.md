@@ -159,7 +159,7 @@ The project is organized into two main directories:
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/anup2702/Grievana-Complaint-Reg-Mang
+   git clone https://github.com/anup2702/Grievana
    ```
 2. **Install backend dependencies:**
    ```sh
