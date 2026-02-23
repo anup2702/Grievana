@@ -4,22 +4,30 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 
-import connectDB from "../config/db.js";
+import connectDB from "./config/db.js";
 
-import userRoutes from "../routes/userRoutes.js";
-import complaintRoutes from "../routes/complaintRoutes.js";
-import contactRoutes from "../routes/contactRoutes.js";
-import adminRoutes from "../routes/adminRoutes.js";
-import { notFound, errorHandler } from "../middleware/errorMiddleware.js";
+import userRoutes from "./routes/userRoutes.js";
+import complaintRoutes from "./routes/complaintRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
 
 const app = express();
 
 // CORS
+const allowedOrigins = [
+  "https://grievana.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
 app.use(
   cors({
-    origin: "https://grievana.vercel.app",
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin)) cb(null, true);
+      else cb(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
@@ -51,5 +59,11 @@ app.use("/api/admin", adminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
+
+// Start server locally (skip on Vercel serverless)
+if (process.env.VERCEL !== "1") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
 
 export default app;

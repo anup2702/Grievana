@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import API from "../api/axios";
+import API, { API_BASE } from "../api/axios";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -119,7 +119,7 @@ const ComplaintDetails = () => {
         {complaint.image && (
           <div className="flex justify-center items-center">
             <img
-              src={`http://localhost:5000/uploads/${complaint.image}`}
+              src={`${API_BASE}/uploads/${complaint.image}`}
               alt="Complaint attachment"
               className="rounded-lg shadow-md max-h-80 object-contain"
             />

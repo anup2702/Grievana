@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import API from "../api/axios";
+import API, { API_BASE } from "../api/axios";
 import { toast } from "react-toastify";
 import { Sparkles } from "lucide-react";
 
@@ -48,7 +48,7 @@ const FeedSection = () => {
   };
 
   const handleViewImage = (imageName) => {
-    setModalImageSrc(`http://localhost:5000/uploads/${imageName}`);
+    setModalImageSrc(`${API_BASE}/uploads/${imageName}`);
     setShowModal(true);
   };
 
@@ -83,7 +83,7 @@ const FeedSection = () => {
             <p className="text-theme-secondary mt-1">{complaint.description}</p>
             {complaint.image && (
               <img
-                src={`http://localhost:5000/uploads/${complaint.image}`}
+                src={`${API_BASE}/uploads/${complaint.image}`}
                 alt="Complaint attachment"
                 className="w-full h-32 object-cover rounded-md mt-2 cursor-pointer"
                 onClick={() => handleViewImage(complaint.image)}
