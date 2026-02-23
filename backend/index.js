@@ -22,6 +22,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
 ];
+
 app.use(
   cors({
     origin: (origin, cb) => {
@@ -33,6 +34,10 @@ app.use(
 );
 
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
 
 // dirname for ES module
 const __filename = fileURLToPath(import.meta.url);
